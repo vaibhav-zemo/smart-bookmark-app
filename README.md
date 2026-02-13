@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Smart Bookmark App
+
+A modern, real-time bookmark manager built with **Next.js 15 (App Router)**, **Supabase**, and **Tailwind CSS**.
+
+This app allows users to sign up via Google, add bookmarks with titles and URLs, and see updates instantly across devices using Supabase Realtime. It features a responsive design and optimistic UI updates for a snappy experience.
+
+## Live Demo (Vercel)
+[Link to your live Vercel deployment here]
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, Tailwind CSS
+- **Backend/Database**: Supabase (PostgreSQL, Auth, Realtime)
+- **Icons**: Lucide React
+- **Validation**: Zod
+- **Language**: TypeScript
+
+## Features
+
+- 🔐 **Google OAuth Login**: Secure authentication flow with no passwords.
+- ⚡ **Real-time Sync**: Bookmarks update instantly in other tabs/windows without refreshing.
+- 🛡️ **Row Level Security (RLS)**: Users can only see and manage their own data.
+- 🚀 **Server Actions**: Robust data mutations with backend validation.
+- 📱 **Responsive Design**: Works great on mobile and desktop.
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repo**
+   ```bash
+   git clone <repo-url>
+   cd bookmark
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Environment Setup**
+   Create a `.env.local` file with your Supabase credentials:
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Challenges & Solutions
 
-## Learn More
+Building this app was a great learning experience. Here are some of the genuine problems I ran into and how I solved them:
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Google OAuth Redirect Mismatch
+**Problem:** After setting up Supabase Auth, I kept getting a `400: redirect_uri_mismatch` error from Google when trying to log in.
+**Solution:** I realized that while I had added the redirect URL to Supabase, I hadn't added the *exact* Supabase callback URL (`https://<project-ref>.supabase.co/auth/v1/callback`) to the **Google Cloud Console**. Once I added that specific URL to the "Authorized redirect URIs" list in Google Console, it worked perfectly.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Duplicate Keys in Realtime List
+**Problem:** I implemented optimistic updates (adding the bookmark locally immediately) AND subscribed to Supabase Realtime 'INSERT' events. This caused a race condition where the bookmark would be added twice—once by my local state update and once when the server confirmed it—resulting in a "Duplicate keys in React" warning and a flickering list.
+**Solution:** I added a check inside the `useEffect` subscription in `BookmarkList`. Before adding a new item from a Realtime event, I check if an item with that ID already exists in the state. If it does, I ignore the event.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Middleware Infinite Redirects
+**Problem:** Initially, my middleware was trying to protect every route, including the static files and the login page itself, causing the app to crash with "Too many redirects."
+**Solution:** I updated the `matcher` config in `middleware.ts` to explicitly exclude `_next/static`, images, and the favicon. I also added logic to only redirect unauthenticated users if they aren't already on the `/login` page.
 
-## Deploy on Vercel
+### 4. Input Visibility
+**Problem:** The default styling for the input placeholders was too light against the white/gray background, making it hard to see what to type.
+**Solution:** I customized the Tailwind classes for the inputs to specifically darken the placeholder text (`placeholder:text-gray-400`), making the form much more user-friendly.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+MIT
