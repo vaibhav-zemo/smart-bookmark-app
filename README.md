@@ -5,7 +5,7 @@ A modern, real-time bookmark manager built with **Next.js 15 (App Router)**, **S
 This app allows users to sign up via Google, add bookmarks with titles and URLs, and see updates instantly across devices using Supabase Realtime. It features a responsive design and optimistic UI updates for a snappy experience.
 
 ## Live Demo (Vercel)
-[Link to your live Vercel deployment here]
+https://smart-bookmark-app-flame.vercel.app
 
 ## Tech Stack
 
