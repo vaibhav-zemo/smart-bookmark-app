@@ -46,9 +46,12 @@ export function BookmarkItem({ bookmark }: { bookmark: Bookmark }) {
             </div>
 
             <button
-                onClick={handleDelete}
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleDelete();
+                }}
                 disabled={isDeleting}
-                className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-600 transition-all rounded-lg hover:bg-red-50 focus:opacity-100"
+                className="p-2 text-gray-400 hover:text-red-600 transition-all rounded-lg hover:bg-red-50 focus:opacity-100 opacity-100 md:opacity-0 md:group-hover:opacity-100"
                 aria-label="Delete bookmark"
                 title="Delete"
             >

@@ -35,7 +35,7 @@ export function AddBookmarkForm() {
                         placeholder="e.g. My Favorite Blog"
                         aria-describedby="title-error"
                         disabled={isPending}
-                        className="bg-gray-50 placeholder:text-gray-400"
+                        className="bg-gray-50 placeholder:text-gray-400 text-gray-900 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-indigo-500 border-gray-200"
                     />
                     {state.errors?.title && (
                         <p id="title-error" className="text-sm text-red-500">
@@ -52,7 +52,7 @@ export function AddBookmarkForm() {
                         placeholder="https://example.com"
                         aria-describedby="url-error"
                         disabled={isPending}
-                        className="bg-gray-50 placeholder:text-gray-400"
+                        className="bg-gray-50 placeholder:text-gray-400 text-gray-900 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-indigo-500 border-gray-200"
                     />
                     {state.errors?.url && (
                         <p id="url-error" className="text-sm text-red-500">
